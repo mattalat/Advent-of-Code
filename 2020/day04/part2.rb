@@ -19,11 +19,16 @@ class Passport
   validates :numerical_hgt, inclusion: { in: 150..193 }, if: ->(p) { p.hgt && p.hgt[-2..-1] == 'cm' }
   validates :numerical_hgt, inclusion: { in: 59..76 }, if: ->(p) { p.hgt && p.hgt[-2..-1] == 'in' }
 
-  def initialize(attr_string_array)
-    @original_string = attr_string_array
-    attr_string_array.map { |kv| { kv.split(':')[0] => kv.split(':')[1] } }
-                     .reduce({}) { |acc, el| acc.merge(el) }
-                     .each { |k, v| send("#{k}=", v) }
+  def self.build_from_dictionary_string(dict_string)
+    dict = dict_string.split(' ')
+                      .compact
+                      .map { |kv| { kv.split(':')[0] => kv.split(':')[1] } }
+                      .reduce({}) { |acc, el| acc.merge(el) }
+    new dict
+  end
+
+  def initialize(dict)
+    dict.each { |k, v| send("#{k}=", v) }
   end
 
   def numerical_hgt
@@ -39,14 +44,14 @@ lines = input.split("\n").push('') # put a final empty el for coda
 
 # Gather attribute string array and create Passports
 passports = []
-attribute_array = []
+dict_string = ''
 
 lines.each do |line|
   if line.empty?
-    passports << Passport.new(attribute_array.flatten)
-    attribute_array = []
+    passports << Passport.build_from_dictionary_string(dict_string)
+    dict_string = ''
   else
-    attribute_array << line.split(' ')
+    dict_string += line + ' '
   end
 end
 
