@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# Load input
-input = File.read(File.expand_path('input.txt', __dir__))
-lines = input.split("\n").map(&:strip).map(&:to_i)
+require_relative '../advent'
+
+lines = Advent.load_input_into_array.map(&:to_i)
 
 target = `ruby part1.rb`.strip.to_i
 
