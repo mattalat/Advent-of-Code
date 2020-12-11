@@ -4,7 +4,7 @@
 input = File.read(File.expand_path('input.txt', __dir__))
 lines = input.split("\n").map(&:strip).map(&:to_i)
 
-target = 530_627_549
+target = `ruby part1.rb`.strip.to_i
 
 sliding_window = [lines.shift]
 

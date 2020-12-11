@@ -13,15 +13,11 @@ end
 
 width = 25
 window = lines[0..width - 1]
-i = width + 1
 
-lines[width..-1].each do |n|
-  if window_can_sum?(window, n)
-    window.shift
-    window.push(n)
-    i += 1
-  else
-    puts "#{i}: #{n}"
-    break
-  end
+lines[width..-1].find do |n|
+  puts n unless window_can_sum?(window, n)
+
+  window.shift
+  window.push(n)
+  false
 end
