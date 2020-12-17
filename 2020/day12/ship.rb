@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
 require_relative 'cardinal_vectors'
+require 'matrix'
 
 class Ship
   attr_accessor :direction, :coordinates, :waypoint
 
-  def initialize(direction = 'E', origin: [0, 0])
+  def initialize(direction = 'E', origin: Vector[0, 0])
     @direction = direction
     @coordinates = origin.clone
   end
 
   def move(spaces, in_direction: nil)
     vector = CARDINAL_VECTORS[in_direction || direction]
-    self.coordinates = [coordinates[0] + (vector[0] * spaces),
-                        coordinates[1] + (vector[1] * spaces)]
+    self.coordinates += vector * spaces
   end
 
   def turn(degrees)
@@ -23,8 +23,6 @@ class Ship
   end
 
   def move_towards_waypoint(spaces)
-    vector = [waypoint.coordinates[0] * spaces, waypoint.coordinates[1] * spaces]
-    self.coordinates = [coordinates[0] + vector[0],
-                        coordinates[1] + vector[1]]
+    self.coordinates += waypoint.coordinates * spaces
   end
 end

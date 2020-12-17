@@ -8,7 +8,7 @@ require_relative 'cardinal_vectors'
 instructions = Advent.load_input_into_array
 
 ship = Ship.new
-waypoint = Waypoint.new [10, 1]
+waypoint = Waypoint.new Vector[10, 1]
 ship.waypoint = waypoint
 
 instructions.each do |instruction|
