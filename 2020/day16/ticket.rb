@@ -7,7 +7,7 @@ class Ticket
 
   def initialize(string, rules)
     @numbers = string.split(',').map(&:to_i)
-    @rules = rules.clone
+    @rules = rules
   end
 
   def valid?

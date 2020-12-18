@@ -2,50 +2,63 @@
 
 require_relative '../advent'
 require_relative 'ticket'
+require 'byebug'
 
-raw        = Advent.read.map(&:chomp)
-ticket_i   = raw.index('your ticket:')
-examples_i = raw.index('nearby tickets:')
-rules      = raw[0...ticket_i - 1]
+raw = Advent.read.map(&:chomp)
+
+rules = raw.take_while { _1 !~ /(^your ticket:)/ }.reject(&:empty?)
+raw = (raw - rules).grep(/\A\d/)
+ticket = raw.shift
+examples = raw
+
+# Parse rules
+
 rules_hash = {}
-
 rules.each do |string|
   name, range_string = string.split(': ')
-  ranges = range_string.split(' or ').map { |r| r.split('-').map(&:to_i) }.map { (_1[0].._1[1]) }
+  ranges = range_string.split(' or ')
+                       .map { _1.split('-').map(&:to_i) }
+                       .map { (_1[0].._1[1]) }
   rules_hash[name] = ranges
 end
 
-ticket   = raw[ticket_i + 1...examples_i - 1].first
-examples = raw[examples_i + 1..]
+my_ticket = Ticket.new(ticket, rules_hash)
+examples = examples.map { Ticket.new(_1, rules_hash) }
 
-examples  = examples.map { Ticket.new(_1, rules_hash) }
-valids    = examples.select(&:valid?)
-invalids  = examples - valids
+valids = examples.select(&:valid?)
+invalids = examples.reject(&:valid?)
 
 puts "Part 1: #{invalids.map(&:invalid_numbers).flatten.sum}"
 
-my_ticket = Ticket.new(ticket, rules_hash)
-all_keys = rules_hash.keys
-possible_rules = Array.new(rules_hash.length, all_keys)
+# Decode field names
+# Start by using valid tickets to filter out field possibilities on each label
 
-valids.each do |v|
-  pls = v.find_potential_rules
-  pls.each_with_index do |possibles, i|
-    diff = possible_rules[i] - possibles[1]
-    next if diff.empty?
+possible_labels = Array.new(rules_hash.length, rules_hash.keys)
 
-    possible_rules[i] = possible_rules[i] - diff
+valids.each do |valid_ticket|
+  valid_ticket.find_potential_rules
+              .each_with_index do |valid_possibilities, i|
+    diff = possible_labels[i] - valid_possibilities[1]
+    possible_labels[i] = possible_labels[i] - diff unless diff.empty?
   end
 end
 
-ordered = possible_rules.zip((0...possible_rules.length)).sort_by { |a, _| a.length }
+# Sort the possible locations by fewest potential rules and find final placements
+# Assumes we start with a field that has only one possibility after the filtering above
 
-ordered.each_with_index do |p, i|
-  rule = p[0]
-  ordered[i + 1..] = ordered[i + 1..].map { |rs, i| [rs - rule, i] }
+unplaced_rules = possible_labels.each_with_index.sort_by { |possibilities, _| possibilities.length }
+placed_rules = [unplaced_rules.shift]
+
+until unplaced_rules.empty?
+  unplaced_rules = unplaced_rules.map { |possibilities, i| [possibilities - placed_rules[0][0], i] }
+  placed_rules.unshift unplaced_rules.shift
 end
 
-departure_rules = ordered.sort_by { _2 }.map { [_1[1], _1[0].first] }.select { _1[1].match? /departure/ }
-departure_fields = departure_rules.map(&:first).map(&:to_i)
+# Sort the final rule placements by index and remove all except the label text
 
-puts "Part 2: #{departure_fields.map { my_ticket.numbers[_1] }.reduce(&:*)}"
+final_rules = placed_rules.sort_by { |_rule, i| i }.flatten.grep(/[^\d]/)
+
+departure_rules = final_rules.select { _1 =~ /departure/ }
+product_of_departure_fields = departure_rules.map { |d| my_ticket.numbers[final_rules.index(d)] }.reduce(&:*)
+
+puts "Part 2: #{product_of_departure_fields}"
