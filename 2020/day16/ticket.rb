@@ -15,15 +15,15 @@ class Ticket
   end
 
   def invalid_numbers
-    numbers.clone.reject do |number|
-      rules.values.flatten.any? { |r| r.include? number }
-    end
+    numbers.reject { |n| rules.values.flatten.any? { _1.include? n } }
   end
 
+  # Returns an Array where each element is [number, potential labels]
   def find_potential_rules
-    numbers.clone.map do |num|
-      [num, []].tap do |arr|
-        rules.each { |k, ranges| arr[1].push(k) if ranges.any? { _1.include? num } }
+    numbers.map do |num|
+      [].tap do |arr|
+        arr << num
+        arr << rules.flat_map { |label, ranges| label if ranges.any? { _1.include? num } }
       end
     end
   end
