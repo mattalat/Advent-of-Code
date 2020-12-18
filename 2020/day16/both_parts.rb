@@ -2,7 +2,6 @@
 
 require_relative '../advent'
 require_relative 'ticket'
-require 'byebug'
 
 raw = Advent.read.map(&:chomp)
 
