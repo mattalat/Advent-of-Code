@@ -2,6 +2,7 @@
 
 require_relative 'tile'
 
+# Very bad
 class TileMapper
   attr_accessor :atlas
 
