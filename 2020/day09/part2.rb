@@ -4,7 +4,7 @@ require_relative '../advent'
 
 lines = Advent.load_input_into_array.map(&:to_i)
 
-target = `ruby part1.rb`.strip.to_i
+target = `ruby #{File.expand_path('part1.rb', __dir__)}`.strip.to_i
 
 sliding_window = [lines.shift]
 
