@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class Game
-  def self.deck_to_i(deck)
-    deck.each_with_index.map { |x, idx| x * (deck.length - idx) }.sum
+  class << self
+    def score(deck)
+      deck.each_with_index.map { |x, idx| x * (deck.length - idx) }.sum
+    end
   end
 
   attr_accessor :player1, :player2, :seen, :winner
@@ -22,7 +24,7 @@ class Game
   end
 
   def to_str
-    "#{player1.join}|#{player2.join}"
+    "#{Game.score(player1)}|#{Game.score(player2)}"
   end
 
   private
