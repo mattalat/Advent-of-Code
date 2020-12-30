@@ -1,11 +1,16 @@
 # frozen_string_literal: true
 
 require_relative '../advent'
+require 'matrix'
 
 t0 = Advent.read.map { _1.split('') }
 w = t0.length / 2
-depth = 0
-neighbors = [1, 1, 1, 0, 0, -1, -1, -1].permutation(3).to_a.uniq
+
+DIRECTIONS = ([-1, 0, 1].repeated_permutation(3).to_a - [[0, 0, 0]]).freeze
+
+def get_neighbors(cell)
+  DIRECTIONS.map { Vector[*_1] + Vector[*cell] }.map(&:to_a)
+end
 
 # Get initial active cells
 
@@ -13,32 +18,13 @@ active_cubes = []
 
 t0.length.times do |x|
   t0.length.times do |y|
-    active_cubes << [x - w, y - w, depth] if t0[x][y] == '#'
+    active_cubes << [x - w, y - w, 0] if t0[x][y] == '#'
   end
 end
 
-# Find new active cells for each cycle
-
-6.times do |i|
-  puts "Stage #{i + 1}"
-  w += 1
-  depth += 1
-  new_active = []
-
-  (-w).upto(w) do |x|
-    (-w).upto(w) do |y|
-      (-depth).upto(depth) do |z|
-        active = neighbors.select { |c| active_cubes.include? [c[0] + x, y + c[1], z + c[2]] }.length
-        if active_cubes.include?([x, y, z])
-          new_active << [x, y, z] if (2..3).include?(active)
-        elsif active == 3
-          new_active << [x, y, z]
-        end
-      end
-    end
-  end
-
-  active_cubes = new_active
+6.times do
+  neighbors = active_cubes.map { get_neighbors _1 }.flatten(1).tally
+  active_cubes = neighbors.select { |cell, n| n == 3 || (n == 2 && active_cubes.include?(cell)) }.keys
 end
 
-puts active_cubes.map { _1.join(', ') }.length
+puts "Active cells: #{active_cubes.length}"
