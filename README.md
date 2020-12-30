@@ -2,13 +2,16 @@
 
 Ruby solutions for [Advent of Code](https://adventofcode.com/) puzzles.
 
-## Pre reqs
+## Instructions
+
+Puzzle prompts and input files for each day are saved in each directory. Solutions are saved either in `part1.rb`/`part2.rb` or `both_parts.rb`.
 
 ### 2020
 
 * Ruby 2.7.1
 
-Directories with a Gemfile require those gems to be available to Ruby 2.7.1. You can install them either by:
+To run:
 
-* Install directly with `gem install <gem>`
-* Install using Bundler (`gem install bundler`) with: `bundle` in the puzzle's directory
+* `bundle install`
+* To run and benchmark all days, run `ruby all.rb`
+* To run a specifc day, refer to solutions in each directory
