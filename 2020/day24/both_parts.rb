@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'byebug'
 require_relative '../advent'
 
 input = Advent.read

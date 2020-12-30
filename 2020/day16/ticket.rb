@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'byebug'
-
 class Ticket
   attr_accessor :numbers, :rules
 
