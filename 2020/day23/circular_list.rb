@@ -23,17 +23,15 @@ class CircularList
     CircularList.stitch(current, section.last.nxt)
     CircularList.stitch(section.last, section.first)
 
-    section.first
+    section
   end
 
-  def insert(new_head, at:)
+  def self.insert(new_head, at:)
     old_tail = new_head.prev
     old_tip = at.nxt
 
     CircularList.stitch(at, new_head)
     CircularList.stitch(old_tail, old_tip)
-
-    current
   end
 
   def self.stitch(one, another)
