@@ -6,7 +6,9 @@ bundle:
   stage: prepare
   script:
     - cd 2020
-    - bundle
+    - bundle config set clean 'true' --local
+    - bundle config set path 'vendor/bundle' --local
+    - bundle install
 
 aoc-2020:
   stage: run
