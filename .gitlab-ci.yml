@@ -26,4 +26,7 @@ aoc-2020:
   stage: run
   script:
     - cd 2020
-    - bundle exec ruby all.rb
+    - bundle exec ruby all.rb > output.txt
+  artifacts:
+    paths:
+      - 2020/output.txt
