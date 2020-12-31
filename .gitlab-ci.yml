@@ -1,0 +1,15 @@
+stages:
+  - prepare
+  - run
+
+bundle:
+  stage: prepare
+  script:
+    - cd 2020
+    - bundle
+
+aoc-2020:
+  stage: run
+  script:
+    - cd 2020
+    - bundle exec ruby all.rb
