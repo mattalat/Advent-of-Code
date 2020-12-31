@@ -6,45 +6,47 @@ input = Advent.read.map(&:strip)
 
 rules = input.select { _1 =~ /^\d/ }.compact
 messages = (input - rules - ['']).compact
-
-rule_hash = {}
-
-rules.each do |rule|
-  num, rule_string = rule.split(': ')
-  rule_hash[num] = rule_string
-end
+rule_hash = rules.to_h { _1.split(': ') }
 
 class Checker
-  attr_accessor :rule_hash
-
-  def initialize(rule_hash)
-    @rule_hash = rule_hash
+  def self.extract_rule(starting, rules:)
+    new(rules).check_rule(starting)
   end
 
-  def check_rule(rule)
-    r = rule_hash[rule]
-    return r[1] if r.length == 3
+  def initialize(rules)
+    @rules = rules.dup
+  end
 
-    tokens = r.split.map do |t|
-      t == '|' ? '|' : check_rule(t)
-    end.join
+  def check_rule(starting)
+    rule = @rules[starting]
+    return rule[1] if rule.include?('"')
 
-    "(#{tokens})"
+    tokens = rule.split.map do |token|
+      token == '|' ? '|' : check_rule(token)
+    end
+
+    "(#{tokens.join})"
   end
 end
 
-checker = Checker.new(rule_hash)
-zero = checker.check_rule('0')
+# Part 1
 
-puts messages.select { _1.match? "^#{zero}$" }.count
+zeroth = Checker.extract_rule('0', rules: rule_hash)
+zero_regex = /^#{zeroth}$/
+puts(messages.count { _1.match? zero_regex })
 
-# Use trial and error to find out how far out to bear the recursion
+# Part 2
 
-new_rule_hash = rule_hash.dup
-new_rule_hash['8'] = '42 | 42 42 | 42 42 42 | 42 42 42 42 | 42 42 42 42 42'
-new_rule_hash['11'] = '42 31 | 42 42 31 31 | 42 42 42 31 31 31 | 42 42 42 42 31 31 31 31 | 42 42 42 42 42 31 31 31 31 31'
+# Since we can't handle infinite recursion, find out how far recursion carries
+# on rules 8/11. To do so, find when the results stop changing when run
+# against our input.
+#
+# In practice, each rule stops yielding different results after 4
+# self-references, so we'll modify them as such.
 
-new_checker = Checker.new(new_rule_hash)
-nz = new_checker.check_rule('0')
+rule_hash['8']  = (1..5).map { ' 42 ' * _1 }.join('|').strip
+rule_hash['11'] = (1..5).map { ' 42 ' * _1 + '31 ' * _1 }.join('|').strip
 
-puts messages.select { _1.match? "^#{nz}$" }.count
+zeroth = Checker.extract_rule('0', rules: rule_hash)
+zero_regex = /^#{zeroth}$/
+puts(messages.count { _1.match? zero_regex })
