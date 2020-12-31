@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative 'circular_list'
-require_relative 'node'
+require_relative 'semi_circular_list'
+require_relative 'diode'
 
 input = '219748365'
 
@@ -11,26 +11,23 @@ N_ROUNDS = 10_000_000
 cups = input.scan(/\d/).map(&:to_i)
 cups += 10.upto(N_CUPS).to_a
 
-list = CircularList.new cups
+list = SemiCircularList.new cups
+
+def normalize(num)
+  ((num - 1) % N_CUPS) + 1
+end
 
 N_ROUNDS.times do
   grabbed = list.take(3)
   grabbed_vals = [grabbed[0].val, grabbed[1].val, grabbed[2].val]
 
-  found = nil
-  desired = list.current.val - 1
-  list.current = list.current.nxt
+  desired = normalize(list.current.val - 1)
+  desired = normalize(desired - 1) while grabbed_vals.include?(desired)
 
-  until found
-    desired = N_CUPS if desired.zero?
-
-    found = Node.find desired unless grabbed_vals.include?(desired)
-    desired -= 1
-  end
-
-  CircularList.insert(grabbed[0], at: found)
+  list.step
+  SemiCircularList.insert(grabbed, at_value: desired)
 end
 
-one = Node.find 1
+one = Diode.find 1
 
-puts "\n#{one.nxt.val * one.nxt.nxt.val}"
+puts "\n#{one.nxt * one.nxt.nxt}"
