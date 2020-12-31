@@ -2,7 +2,16 @@ stages:
   - prepare
   - run
 
+.default_cache:
+  cache:
+    paths:
+      - 2020/.bundle/config
+      - 2020/vendor/bundle/
+    policy: pull-push
+
+
 bundle:
+  extends: .default_cache
   stage: prepare
   script:
     - cd 2020
@@ -11,6 +20,9 @@ bundle:
     - bundle install
 
 aoc-2020:
+  extends: .default_cache
+  cache:
+    policy: pull
   stage: run
   script:
     - cd 2020
