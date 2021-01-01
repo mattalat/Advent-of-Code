@@ -2,13 +2,13 @@ stages:
   - 'prepare bundle'
   - 'prepare python'
   - run
+  - report
 
 .default_cache:
   cache:
     paths:
       - 2020/.bundle/config
       - 2020/vendor/bundle/
-      - 2020/vendor/python/
     policy: pull-push
 
 
@@ -26,7 +26,7 @@ pip:
   stage: 'prepare python'
   script:
     - cd 2020
-    - pip3.6 install -t vendor/python anybadge
+    - pip3.6 install --user anybadge
 
 aoc-2020:
   extends: .default_cache
@@ -39,3 +39,15 @@ aoc-2020:
   artifacts:
     paths:
       - 2020/output.txt
+
+# create_badge_svg:
+#   stage: report
+#   script:
+#     - commits=$(git rev-list --all --count)
+#     - cd 2020
+#     - anybadge -l commits -v $commits -f commits.svg -c green
+#   artifacts:
+#     paths:
+#       - commits.svg
+#     when: always
+#     expire_in: 4 weeks
