@@ -1,5 +1,6 @@
 stages:
-  - prepare
+  - 'prepare bundle'
+  - 'prepare python'
   - run
 
 .default_cache:
@@ -7,17 +8,25 @@ stages:
     paths:
       - 2020/.bundle/config
       - 2020/vendor/bundle/
+      - 2020/vendor/python/
     policy: pull-push
 
 
 bundle:
   extends: .default_cache
-  stage: prepare
+  stage: 'prepare bundle'
   script:
     - cd 2020
     - bundle config set clean 'true' --local
     - bundle config set path 'vendor/bundle' --local
     - bundle install
+
+pip:
+  extends: .default_cache
+  stage: 'prepare-python'
+  script:
+    - cd 2020
+    - pip3.6 install -t vendor/python anybadge
 
 aoc-2020:
   extends: .default_cache
