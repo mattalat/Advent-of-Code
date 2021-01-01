@@ -45,7 +45,7 @@ create_badge_svg:
   script:
     - commits=$(git rev-list --all --count)
     - pip3.6 install --user anybadge
-    - .local/lib/python3.6/bin/anybadge -l commits -v $commits -f commits.svg -c green
+    - ~/.local/lib/python3.6/bin/anybadge -l commits -v $commits -f commits.svg -c green
   artifacts:
     paths:
       - commits.svg
