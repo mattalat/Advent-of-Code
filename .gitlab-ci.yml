@@ -23,7 +23,7 @@ bundle:
 
 pip:
   extends: .default_cache
-  stage: 'prepare-python'
+  stage: 'prepare python'
   script:
     - cd 2020
     - pip3.6 install -t vendor/python anybadge
