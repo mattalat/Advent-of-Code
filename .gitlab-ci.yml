@@ -44,7 +44,6 @@ create_badge_svg:
   stage: report
   script:
     - commits=$(git rev-list --all --count)
-    - cd 2020
     - pip3.6 install --user anybadge
     - anybadge -l commits -v $commits -f commits.svg -c green
   artifacts:
