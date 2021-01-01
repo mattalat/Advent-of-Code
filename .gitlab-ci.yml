@@ -1,6 +1,6 @@
 stages:
   - 'prepare bundle'
-  - 'prepare python'
+  # - 'prepare python'
   - run
   - report
 
@@ -21,12 +21,12 @@ bundle:
     - bundle config set path 'vendor/bundle' --local
     - bundle install
 
-pip:
-  extends: .default_cache
-  stage: 'prepare python'
-  script:
-    - cd 2020
-    - pip3.6 install --user anybadge
+# pip:
+#   extends: .default_cache
+#   stage: 'prepare python'
+#   script:
+#     - cd 2020
+#     - pip3.6 install --user anybadge
 
 aoc-2020:
   extends: .default_cache
@@ -40,14 +40,15 @@ aoc-2020:
     paths:
       - 2020/output.txt
 
-# create_badge_svg:
-#   stage: report
-#   script:
-#     - commits=$(git rev-list --all --count)
-#     - cd 2020
-#     - anybadge -l commits -v $commits -f commits.svg -c green
-#   artifacts:
-#     paths:
-#       - commits.svg
-#     when: always
-#     expire_in: 4 weeks
+create_badge_svg:
+  stage: report
+  script:
+    - commits=$(git rev-list --all --count)
+    - cd 2020
+    - pip3.6 install --user anybadge
+    - anybadge -l commits -v $commits -f commits.svg -c green
+  artifacts:
+    paths:
+      - commits.svg
+    when: always
+    expire_in: 4 weeks
