@@ -8,7 +8,7 @@ Puzzle prompts and input files for each day are saved in each directory. Solutio
 
 ### 2020
 
-* Ruby 2.7.1
+* Ruby 2.7.4
 
 To run:
 
