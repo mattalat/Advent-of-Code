@@ -10,7 +10,7 @@ stages:
       - 2020/.bundle/config
       - 2020/vendor/bundle/
       - 2021/.bundle/config
-      - 2021/vendor/config
+      - 2021/vendor/bundle/
     policy: pull-push
 
 
