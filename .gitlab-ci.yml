@@ -13,11 +13,11 @@ stages:
       - 2021/vendor/bundle/
     policy: pull-push
 
-
 bundle:
   extends: .default_cache
   stage: 'prepare bundle'
   script:
+    - rbenv versions
     - cd 2020
     - bundle config set clean 'true' --local
     - bundle config set path 'vendor/bundle' --local
