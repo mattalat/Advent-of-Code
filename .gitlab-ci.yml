@@ -9,6 +9,8 @@ stages:
     paths:
       - 2020/.bundle/config
       - 2020/vendor/bundle/
+      - 2021/.bundle/config
+      - 2021/vendor/config
     policy: pull-push
 
 
@@ -17,6 +19,10 @@ bundle:
   stage: 'prepare bundle'
   script:
     - cd 2020
+    - bundle config set clean 'true' --local
+    - bundle config set path 'vendor/bundle' --local
+    - bundle install
+    - cd ../2021
     - bundle config set clean 'true' --local
     - bundle config set path 'vendor/bundle' --local
     - bundle install
@@ -36,9 +42,23 @@ aoc-2020:
   script:
     - cd 2020
     - bundle exec ruby all.rb > output.txt
+    - cat output.txt
   artifacts:
     paths:
       - 2020/output.txt
+
+aoc-2021:
+  extends: .default_cache
+  cache:
+    policy: pull
+  stage: run
+  script:
+    - cd 2021
+    - bundle exec ruby all.rb > output.txt
+    - cat output.txt
+  artifacts:
+    paths:
+      - 2021/output.txt
 
 create_badge_svg:
   stage: report

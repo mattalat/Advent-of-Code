@@ -6,6 +6,10 @@ Ruby solutions for [Advent of Code](https://adventofcode.com/) puzzles.
 
 Puzzle prompts and input files for each day are saved in each directory. Solutions are saved either in `part1.rb`/`part2.rb` or `both_parts.rb`.
 
+### 2021
+
+* Ruby 2.7.5
+
 ### 2020
 
 * Ruby 2.7.4
