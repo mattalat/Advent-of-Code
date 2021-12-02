@@ -4,12 +4,12 @@ require 'matrix'
 require 'ostruct'
 
 input = File.open(File.expand_path('input', __dir__)).readlines.join
-parsed = input.scan(/(\w+).(\d+)/).map { [_1, _2.to_i] }
+
 submarine = OpenStruct.new(pos: Vector[0, 0], aim: 0)
 
-parsed.each do |direction, amt|
-  submarine.pos += Vector[submarine.aim * amt, amt] if direction =~ /^f/
-  submarine.aim += direction =~ /^u/ ? amt * -1 : amt if direction =~ /^[u,d]/
+input.scan(/(\w).+(\d+)/).map { [_1.to_sym, _2.to_i] }.each do |d, amt|
+  submarine.pos += Vector[submarine.aim * amt, amt] if d == :f
+  submarine.aim += { f: 0, d: 1, u: -1 }[d] * amt
 end
 
 p submarine.pos.reduce(&:*)
