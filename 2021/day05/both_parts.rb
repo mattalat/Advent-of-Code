@@ -3,7 +3,6 @@
 input = File.open(File.expand_path('input', __dir__)).readlines.map(&:chomp)
 
 vecs = input.map { |l| l.split(' -> ').flat_map { _1.scan(/(\d+),(\d+)/).map { |coords| coords.map(&:to_i) } } }
-
 linears   = vecs.select { |s, e| s[0] == e[0] || s[1] == e[1] }
 diagonals = vecs.select { |s, e| (s[0] - e[0]).abs == (s[1] - e[1]).abs }
 
