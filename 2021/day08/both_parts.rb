@@ -7,7 +7,7 @@ input = File.open(File.expand_path('input', __dir__)).readlines.map(&:chomp)
 
 displays = input.map { |l| l.split('|').map { _1.split(' ') } }
 
-p displays.map(&:last).flat_map { _1.map(&:length) }.select { [2, 3, 4, 7].include? _1 }.count
+p displays.flat_map { _1.last.map(&:length) }.select { [2, 3, 4, 7].include? _1 }.count
 
 numbers = displays.map do |wirings, outputs|
   wirings.map! { Set.new(_1.split('')) }
@@ -20,7 +20,6 @@ numbers = displays.map do |wirings, outputs|
     8 => wirings.find { _1.length == 7 }
   }
 
-  wirings -= mappings.keys
   fives = wirings.select { _1.length == 5 }
   sixes = wirings.select { _1.length == 6 }
 
