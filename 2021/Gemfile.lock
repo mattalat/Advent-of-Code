@@ -26,6 +26,7 @@ PLATFORMS
 
 DEPENDENCIES
   activemodel
+  activesupport
   byebug
   terminal-table
 
