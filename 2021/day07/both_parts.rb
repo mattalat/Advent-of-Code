@@ -4,19 +4,10 @@ input = File.open(File.expand_path('input', __dir__)).readlines.map(&:chomp).fir
 
 pos = input.split(',').map(&:to_i)
 
-costs = pos.min.upto(pos.max).map do |p|
-  [p, pos.map { |x| (p - x).abs }.sum]
+costs = (pos.min..pos.max).map do |p|
+  delta = pos.map { |x| (p - x).abs }
+  [delta.sum, delta.sum { |n| n / 2.0 * (2 + n - 1) }]
 end
 
-puts costs.min_by(&:last).last
-
-costs = pos.min.upto(pos.max).map do |p|
-  cost = pos.map do |x|
-    n = (p - x).abs
-    n / 2.0 * (2 + n - 1)
-  end
-
-  [p, cost.sum]
-end
-
-puts costs.min_by(&:last).last
+puts costs.map(&:first).min
+puts costs.map(&:last).min
