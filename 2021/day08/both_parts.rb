@@ -5,13 +5,13 @@ require 'active_support/core_ext/array'
 
 input = File.open(File.expand_path('input', __dir__)).readlines.map(&:chomp)
 
-displays = input.map { |l| l.split('|').map { _1.split(' ') } }
+displays = input.map { _1.split('|').map(&:split) }
 
 p displays.flat_map { _1.last.map(&:length) }.select { [2, 3, 4, 7].include? _1 }.count
 
 numbers = displays.map do |wirings, outputs|
-  wirings.map! { Set.new(_1.split('')) }
-  outputs.map! { Set.new(_1.split('')) }
+  wirings.map! { Set.new(_1.chars) }
+  outputs.map! { Set.new(_1.chars) }
 
   mappings = {
     1 => wirings.find { _1.length == 2 },

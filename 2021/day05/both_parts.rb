@@ -15,8 +15,8 @@ vecs.each do |from, to|
   dy /= len
 
   0.upto(len).each do |i|
-    card_map[from[0] + dx * i][from[1] + dy * i] += 1 if from[0] == to[0] || from[1] == to[1]
-    all_map[from[0] + dx * i][from[1] + dy * i] += 1
+    card_map[from[0] + (dx * i)][from[1] + (dy * i)] += 1 if from[0] == to[0] || from[1] == to[1]
+    all_map[from[0] + (dx * i)][from[1] + (dy * i)] += 1
   end
 end
 

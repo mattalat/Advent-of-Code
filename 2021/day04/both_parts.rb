@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-input = File.open(File.expand_path('input', __dir__)).readlines.map(&:chomp)
+input = File.open(File.expand_path('input', __dir__)).readlines.map(&:chomp).reject(&:empty?)
 
-draws = input.shift.scan(/\d+/)
-boards = input[1..].each_slice(6).map(&:to_a).map { _1[0..-2] }.map { |board| board.map { _1.scan(/\d+/) } }
+draws = input.shift.scan(/\d+/).map(&:to_i)
+boards = input.each_slice(5).map { |board| board.map { _1.scan(/\d+/).map(&:to_i) } }
 scores = []
 
 def board_wins?(board)
@@ -17,7 +17,7 @@ until boards.empty?
     board.each { |row| row.each_with_index { |cell, j| row[j] = nil if cell == draw } }
     next false unless board_wins?(board)
 
-    scores << board.map(&:compact).map { _1.map(&:to_i).sum }.sum * draw.to_i
+    scores << (board.flat_map(&:compact).sum * draw)
   end
 end
 
