@@ -3,19 +3,21 @@
 require 'benchmark'
 require 'terminal-table'
 
-rows = Dir['day*'].sort.map do |day|
-  files = Dir["#{day}/*.rb"].select { _1.match?(/(part\d|both_parts)\.rb/) }
+puts 'Running...'
 
-  print "\rRunning #{day}"
+rows = Dir['day*'].sort.map do |day|
+  files = Dir["#{day}/*.rb"].grep(/(part\d|both_parts)\.rb/)
+
+  print "\r#{day}"
   running_time = Benchmark.realtime { files.each { |file| `ruby #{file}` } }
 
-  [day.scan(/\d+/).first, format('%<time>.3f', time: running_time)]
+  [day.scan(/\d+/).first.gsub(/^0/, ''), format('%<time>.3f', time: running_time).gsub(/^0+/, '')]
 end
 
-puts ''
-puts "Done.\n\n"
+print "\33[2K\rDone\n\n"
 
 table = Terminal::Table.new headings: ['Day', 'Time (s)'], rows: rows
+table.align_column(0, :right)
 table.align_column(1, :right)
 
 puts table
