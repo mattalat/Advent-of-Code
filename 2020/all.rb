@@ -9,7 +9,7 @@ rows = Dir['day*'].sort.map do |day|
   print "\rRunning #{day}"
   running_time = Benchmark.realtime { files.each { |file| `ruby #{file}` } }
 
-  [day.scan(/\d+/).first, format('%.3f', running_time)]
+  [day.scan(/\d+/).first, format('%.3f', running_time).gsub(/^0+/, '')]
 end
 
 puts ''
