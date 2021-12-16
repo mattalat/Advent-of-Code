@@ -22,7 +22,7 @@ class Solver
     @graph[0][1] = 0
     @source = 0
     @destination = @coords.length - 1
-    @pq = [graph[0]]
+    @pq = Set.new([graph[0]])
   end
 
   def solve
@@ -44,15 +44,16 @@ class Solver
   def dijkstra
     until pq.empty?
       u = pq.min_by { _1[1] }
-      self.pq -= [u]
+      pq.delete u
 
-      adjacent_to(u[0]).map { graph[_1] }.each do |v|
+      adjacent_to(u[0]).each do |c|
+        v = graph[c]
         alt = u[1] + coords[v[0]]
         next unless v[1] > alt
 
         v[1] = alt
         v[2] = u[0]
-        pq.push(v)
+        pq.add v
       end
     end
   end
