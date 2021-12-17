@@ -16,6 +16,7 @@ GEM
     minitest (5.14.4)
     pastel (0.8.0)
       tty-color (~> 0.5)
+    priority_queue_cxx (0.3.4)
     strings-ansi (0.2.0)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
@@ -43,6 +44,7 @@ DEPENDENCIES
   activemodel
   activesupport
   byebug
+  priority_queue_cxx
   terminal-table
   tty-command
   tty-logger

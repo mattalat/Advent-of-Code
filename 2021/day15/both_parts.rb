@@ -2,6 +2,7 @@
 
 require 'active_support/core_ext/object'
 require 'active_support/core_ext/array'
+require 'fc'
 
 input = File.open(File.expand_path('input', __dir__)).readlines.map(&:chomp)
 
@@ -22,7 +23,8 @@ class Solver
     @graph[0][1] = 0
     @source = 0
     @destination = @coords.length - 1
-    @pq = Set.new([graph[0]])
+    @pq = FastContainers::PriorityQueue.new(:min)
+    @pq.push(graph[0], graph[0][1])
   end
 
   def solve
@@ -36,15 +38,15 @@ class Solver
     [
       (xy - w if xy >= w),
       (xy + w if xy < (w * h) - w),
-      (xy + 1 unless xy % w == w - 1),
+      (xy + 1 unless ((xy + 1) % w).zero?),
       (xy - 1 unless (xy % w).zero?)
     ].compact
   end
 
   def dijkstra
     until pq.empty?
-      u = pq.min_by { _1[1] }
-      pq.delete u
+      u = pq.pop
+      return if u == destination
 
       adjacent_to(u[0]).each do |c|
         v = graph[c]
@@ -53,7 +55,7 @@ class Solver
 
         v[1] = alt
         v[2] = u[0]
-        pq.add v
+        pq.push(v, alt)
       end
     end
   end
