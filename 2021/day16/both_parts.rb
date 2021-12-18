@@ -3,15 +3,11 @@ require 'byebug'
 
 input = File.open(File.expand_path('input', __dir__)).readlines.map(&:chomp)
 
-segments = input[0].chars.map { _1.to_i(16).to_s(2) }
-message  = segments.map { _1.rjust(4, '0') }.join
-
 class Packet
   attr_reader :version, :type
   attr_accessor :value, :contents, :subpackets
 
   def initialize(message)
-    message     = message.dup
     @version    = message[0...3].to_i(2)
     @type       = message[3...6].to_i(2)
     @contents   = message[6..]
@@ -20,9 +16,9 @@ class Packet
 
   def parse
     if type == 4
-      @value = parse_literal
+      @value = convert_literal
     else
-      parse_operator
+      perform_operation
     end
   end
 
@@ -48,24 +44,19 @@ class Packet
 
   private
 
-  def parse_literal
+  def convert_literal
     num = []
-    group = '1'
-
-    while group[0] == '1'
-      group = contents.slice!(0...5)
-      num << group[1..]
-    end
-
+    num << contents.slice!(0...4) while contents.slice!(0) == '1'
+    num << contents.slice!(0...4) # the last 4 bits consitute the end of the number
     num.join.to_i(2)
   end
 
-  def parse_operator
-    length_type = contents.slice!(0).to_i
-    length_type.zero? ? parse_operator_zero : parse_operator_one
+  def perform_operation
+    operand_type = contents.slice!(0).to_i
+    operand_type.zero? ? operation_zero : operation_one
   end
 
-  def parse_operator_zero
+  def operation_zero
     subpacket_length = contents.slice!(0...15).to_i(2)
     subpackets_contents = contents.slice!(0...subpacket_length)
 
@@ -76,7 +67,7 @@ class Packet
     end
   end
 
-  def parse_operator_one
+  def operation_one
     subpacket_count = contents.slice!(0...11).to_i(2)
     num_read = 0
 
@@ -88,6 +79,9 @@ class Packet
     end
   end
 end
+
+segments = input[0].chars.map { _1.to_i(16).to_s(2) }
+message  = segments.map { _1.rjust(4, '0') }.join
 
 packet = Packet.new(message)
 packet.parse

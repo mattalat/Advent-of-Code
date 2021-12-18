@@ -21,7 +21,7 @@ class Cave
   end
 
   def steps_until_sync
-    1 + (0..).find do
+    (1..).find do
       step_once
       flashed.length == map.length * map.first.length
     end
